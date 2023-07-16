@@ -31,6 +31,10 @@ const Sale = sequelize.define(
       type: DataTypes.FLOAT,
       allowNull: true,
     },
+    Totaldollar: {
+      type: DataTypes.FLOAT,
+      allowNull: true,
+    },
   },
   {
     sequelize,
