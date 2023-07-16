@@ -34,6 +34,11 @@ const Orders = sequelize.define(
     total_price:{
         type:DataTypes.INTEGER,
         allowNull:false,
+    },
+    status:{
+      type:DataTypes.INTEGER,
+      allowNull:false,
+      defaultValue:1
     }
   },
   {

@@ -70,3 +70,26 @@ exports.get_all_order = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+// get history of order 
+exports.get_history = async (req , res) => {
+    try {
+        const sql = `
+         select DISTINCT ord.id,ordt.product_id,ordt.bill_number,pdt.name as type_name,ut.name as unit_name
+         ,pt.name, ord.order_qty,ord.order_date,ordt.order_qty as qty_small,ordt.total_price as order_details_price,
+         ordt.id as orderdetails_id,ord.total_price,ord.status from orders ord 
+         inner join orderdetails ordt on ord.id = ordt.order_id
+         inner join products pt on ordt.product_id = pt.id
+         inner join product_types pdt on pt.product_type_id = pdt.id
+         inner join units ut on pt.unit_id = ut.id
+         where ord.status = 1
+        `;
+        const data = await sequelize.query(sql, { type: QueryTypes.SELECT });
+        if (data.length > 0) {
+          return res.status(200).json(data);
+        } else {
+          return res.status(200).json(data);
+        }
+      } catch (error) {
+        return res.status(500).json({ message: error.message });
+      }
+}
