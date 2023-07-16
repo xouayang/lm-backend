@@ -46,8 +46,9 @@ exports.get_all_order = async (req, res) =>{
  try {
     const {id} = req.params;
     const sql = `
-     select ord.id as order_id, ordt.product_id,ordt.bill_number,pdt.name as type_name,ut.name as unit_name
-     ,pt.name, ord.order_qty,ord.order_date,ord.total_price from orders ord 
+     select DISTINCT ord.id,ordt.product_id,ordt.bill_number,pdt.name as type_name,ut.name as unit_name
+     ,pt.name, ord.order_qty,ord.order_date,ordt.order_qty as qty_small,ordt.total_price as order_details_price,
+     ordt.id as orderdetails_id,ord.total_price from orders ord 
      inner join orderdetails ordt on ord.id = ordt.order_id
      inner join products pt on ordt.product_id = pt.id
      inner join product_types pdt on pt.product_type_id = pdt.id
