@@ -71,4 +71,35 @@ exports.deleteProduct = async (req,res) => {
     } catch (error) {
         return res.status(500).json({message:error.message})       
     }
-}
+};
+
+// subtract quantity
+exports.subtractQuantity = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { quantity } = req.body;
+
+    // Retrieve the product
+    const product = await Product.findOne({ where: { id } });
+
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    // Check if the requested quantity is greater than the available quantity
+    if (quantity > product.quatity) {
+      return res.status(400).json({ message: 'Requested quantity exceeds available quantity' });
+    }
+
+    // Subtract the quantity
+    const updatedQuantity = product.quatity - quantity;
+
+    // Update the product with the new quantity
+    await Product.update({ quatity: updatedQuantity }, { where: { id } });
+
+    return res.status(200).json({ message: 'Quantity subtracted successfully' });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
