@@ -52,8 +52,9 @@ exports.create_import = async (req, res) => {
 exports.get_history = async (req, res) => {
     try {
      const sql = `
-       select * from imports 
-     `
+       select from imports imts 
+       inner join import
+       `
     const data = await sequelize.query(sql,{type:QueryTypes.SELECT})    
     if(data.length > 0) {
         return res.status(200).json(data);
