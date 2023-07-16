@@ -1,9 +1,9 @@
-const Customer = require("../model/customer.model");
+const Sale = require("../model/sale.model");
 
-// Create customer
+// create sale
 exports.create = async (req, res) => {
   try {
-    await Customer.create({ ...req.body }).then((data) => {
+    await Sale.create({ ...req.body }).then((data) => {
       if (data) {
         return res.status(201).json(data);
       } else {
@@ -15,10 +15,10 @@ exports.create = async (req, res) => {
   }
 };
 
-// Get all customers
+// get all sales
 exports.getAll = async (req, res) => {
   try {
-    await Customer.findAndCountAll().then((data) => {
+    await Sale.findAndCountAll().then((data) => {
       if (data.rows.length > 0) {
         return res.status(200).json(data);
       }
@@ -29,11 +29,11 @@ exports.getAll = async (req, res) => {
   }
 };
 
-// Get customer by ID
+// get sale by id
 exports.getById = async (req, res) => {
   try {
     const { id } = req.params;
-    await Customer.findOne({ where: { id: id } }).then((data) => {
+    await Sale.findOne({ where: { id: id } }).then((data) => {
       if (data) {
         return res.status(200).json(data);
       }
@@ -44,11 +44,11 @@ exports.getById = async (req, res) => {
   }
 };
 
-// Update customer
-exports.updateCustomer = async (req, res) => {
+// update sale
+exports.updateSale = async (req, res) => {
   try {
     const { id } = req.params;
-    await Customer.update({ ...req.body }, { where: { id: id } }).then((updated) => {
+    await Sale.update({ ...req.body }, { where: { id: id } }).then((updated) => {
       if (updated) {
         return res.status(200).json({ message: "Updated Success" });
       } else {
@@ -60,11 +60,11 @@ exports.updateCustomer = async (req, res) => {
   }
 };
 
-// Delete customer
-exports.deleteCustomer = async (req, res) => {
+// delete sale
+exports.deleteSale = async (req, res) => {
   try {
     const { id } = req.params;
-    await Customer.destroy({ where: { id: id } }).then((deleted) => {
+    await Sale.destroy({ where: { id: id } }).then((deleted) => {
       if (deleted) {
         return res.status(200).json({ message: "Deleted Success" });
       } else {

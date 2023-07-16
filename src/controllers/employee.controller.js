@@ -41,6 +41,7 @@ exports.signIn = async (req, res) => {
       const comparePassword = await bcrypt.compare(password, data.password);
       if (comparePassword) {
         const info = {
+          id: data.id,
           first_name: data.first_name,
           last_name: data.last_name,
           gender: data.gender,

@@ -1,9 +1,9 @@
-const Customer = require("../model/customer.model");
+const SaleDetail = require("../model/sale_detail.model");
 
-// Create customer
+// Create sale detail
 exports.create = async (req, res) => {
   try {
-    await Customer.create({ ...req.body }).then((data) => {
+    await SaleDetail.create({ ...req.body }).then((data) => {
       if (data) {
         return res.status(201).json(data);
       } else {
@@ -15,10 +15,10 @@ exports.create = async (req, res) => {
   }
 };
 
-// Get all customers
+// Get all sale details
 exports.getAll = async (req, res) => {
   try {
-    await Customer.findAndCountAll().then((data) => {
+    await SaleDetail.findAndCountAll().then((data) => {
       if (data.rows.length > 0) {
         return res.status(200).json(data);
       }
@@ -29,11 +29,11 @@ exports.getAll = async (req, res) => {
   }
 };
 
-// Get customer by ID
+// Get sale detail by id
 exports.getById = async (req, res) => {
   try {
     const { id } = req.params;
-    await Customer.findOne({ where: { id: id } }).then((data) => {
+    await SaleDetail.findOne({ where: { id: id } }).then((data) => {
       if (data) {
         return res.status(200).json(data);
       }
@@ -44,11 +44,11 @@ exports.getById = async (req, res) => {
   }
 };
 
-// Update customer
-exports.updateCustomer = async (req, res) => {
+// Update sale detail
+exports.updateSaleDetail = async (req, res) => {
   try {
     const { id } = req.params;
-    await Customer.update({ ...req.body }, { where: { id: id } }).then((updated) => {
+    await SaleDetail.update({ ...req.body }, { where: { id: id } }).then((updated) => {
       if (updated) {
         return res.status(200).json({ message: "Updated Success" });
       } else {
@@ -60,11 +60,11 @@ exports.updateCustomer = async (req, res) => {
   }
 };
 
-// Delete customer
-exports.deleteCustomer = async (req, res) => {
+// Delete sale detail
+exports.deleteSaleDetail = async (req, res) => {
   try {
     const { id } = req.params;
-    await Customer.destroy({ where: { id: id } }).then((deleted) => {
+    await SaleDetail.destroy({ where: { id: id } }).then((deleted) => {
       if (deleted) {
         return res.status(200).json({ message: "Deleted Success" });
       } else {

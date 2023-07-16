@@ -1,8 +1,8 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../configs/db");
 
-const Customer = sequelize.define(
-  "customers",
+const SaleDetail = sequelize.define(
+  "sale_details",
   {
     id: {
       type: DataTypes.UUID,
@@ -10,32 +10,36 @@ const Customer = sequelize.define(
       allowNull: false,
       primaryKey: true,
     },
-    Fname: {
-      type: DataTypes.STRING,
+    Sale_id: {
+      type: DataTypes.UUID,
       allowNull: true,
     },
-    Lname: {
-      type: DataTypes.STRING,
+    Pro_id: {
+      type: DataTypes.UUID,
       allowNull: true,
     },
-    gender: {
-      type: DataTypes.STRING,
+    Exch_id: {
+      type: DataTypes.UUID,
       allowNull: true,
     },
-    village: {
-      type: DataTypes.STRING,
+    Sale_detail_date: {
+      type: DataTypes.DATE,
       allowNull: true,
     },
-    province: {
-      type: DataTypes.STRING,
+    Sale_qty: {
+      type: DataTypes.INTEGER,
       allowNull: true,
     },
-    tel: {
-      type: DataTypes.STRING,
+    Guanranteed: {
+      type: DataTypes.BOOLEAN,
       allowNull: true,
     },
-    email: {
-      type: DataTypes.STRING,
+    Date_expired: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    Totalkip: {
+      type: DataTypes.FLOAT,
       allowNull: true,
     },
   },
@@ -45,4 +49,4 @@ const Customer = sequelize.define(
   }
 );
 
-module.exports = Customer;
+module.exports = SaleDetail;
