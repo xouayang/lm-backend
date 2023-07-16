@@ -2,10 +2,12 @@ const imports = require("../model/import.model");
 const importDetails = require("../model/importDetails.model");
 const product = require('../model/prduct.model');
 const sequelize = require('../configs/db');
+const order = require('../model/order.model')
 const {QueryTypes} = require('sequelize');
 exports.create_import = async (req, res) => {
   try {
     let result=[]
+    let order_update_id;
     const employee_id = req.payload.id
     const {
       order_id,
@@ -30,6 +32,7 @@ exports.create_import = async (req, res) => {
           import_total_kip: import_total_kip,
         })
         .then(async (data) => {
+            order_update_id = data.order_id
           await importDetails.create({
             import_id: data.id,
             import_details_date: item[i].import_details_date,
@@ -43,6 +46,7 @@ exports.create_import = async (req, res) => {
           })
         });
     }
+    await order.update({status:0}, {where:{id:order_update_id}})
     return res.status(200).json(result)
   } catch (error) {
     return res.status(500).json({ message: error.message });
