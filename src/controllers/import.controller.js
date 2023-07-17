@@ -56,8 +56,11 @@ exports.create_import = async (req, res) => {
 exports.get_history = async (req, res) => {
     try {
      const sql = `
-       select from imports imts 
-       inner join import
+       select DISTINCT ip.id , ip.import_quaty as total_quaty,
+       ip.import_total_kip,
+       ip.import_date,ipd.import_qty as details_qty,ipd.total_price
+        from imports ip 
+       inner join import_details ipd on ip.id = ipd.import_id
        `
     const data = await sequelize.query(sql,{type:QueryTypes.SELECT})    
     if(data.length > 0) {
