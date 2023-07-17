@@ -3,12 +3,6 @@ const exchanges = require('../model/exchange.model');
 // create exchange 
 exports.create = async (req, res) => {
     try {
-        // const {name,bathtokip, dollartokip} = req.body;
-        // const data = {
-        //     name:name,
-        //     bathtokip:bathtokip,
-        //     dollartokip:dollartokip
-        // }
         await exchanges.create({...req.body}).then((data) => {
             if(data) {
                 return res.status(200).json(data)

@@ -13,6 +13,8 @@ const Product = require('./product.routes');
 const Exchange = require('./exchange.routes');
 const order = require('./order.routes');
 const imports = require('./import.routes');
+const reports = require('./reports.routes');
+const search = require('./search.routes');
 //use routes
 routes.use("/employee", employee);
 routes.use("/customer", customer);
@@ -25,4 +27,6 @@ routes.use("/sale_detail", Sale_detail);
 routes.use("/Exchange", Exchange);
 routes.use("/order", order);
 routes.use("/imports", imports);
+routes.use("/reports", reports);
+routes.use("/search", search);
 module.exports = routes;
