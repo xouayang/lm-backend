@@ -1,6 +1,7 @@
 const DataTypes = require("sequelize");
 const sequelize = require("../configs/db");
 
+
 const Product = sequelize.define(
   "products",
   {

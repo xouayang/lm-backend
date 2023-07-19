@@ -1,5 +1,7 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../configs/db");
+const Product = require("./prduct.model"); // Import the Product model
+
 
 const SaleDetail = sequelize.define(
   "sale_details",
@@ -48,5 +50,5 @@ const SaleDetail = sequelize.define(
     timestamps: true,
   }
 );
-
+SaleDetail.belongsTo(Product, { foreignKey: 'Pro_id', as: 'product' });
 module.exports = SaleDetail;

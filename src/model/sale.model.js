@@ -1,5 +1,7 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../configs/db");
+const Customer = require("./customer.model"); // Import the Customer model
+const Employee = require("./employee.model"); // Import the Employee model
 
 const Sale = sequelize.define(
   "sales",
@@ -12,8 +14,7 @@ const Sale = sequelize.define(
     },
     Em_id: {
       type: DataTypes.STRING,
-      allowNull: true
-      ,
+      allowNull: true,
     },
     Cus_id: {
       type: DataTypes.STRING,
@@ -42,4 +43,6 @@ const Sale = sequelize.define(
   }
 );
 
+Sale.belongsTo(Customer, { foreignKey: "Cus_id", as: "customer" }); // Associate Sale with Customer
+Sale.belongsTo(Employee, { foreignKey: "Em_id", as: "employee" }); // Associate Sale with Employee
 module.exports = Sale;

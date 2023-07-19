@@ -1,4 +1,75 @@
 const Sale = require("../model/sale.model");
+const Customer = require("../model/customer.model"); // Import the Customer model
+const Employee = require("../model/employee.model"); // Import the Employee model
+
+// get sale by id with additional details
+exports.getSaleById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await Sale.findByPk(id, {
+      include: [
+        {
+          model: Customer,
+          as: 'customer',
+        },
+        {
+          model: Employee,
+          as: 'employee',
+        },
+      ],
+    }).then((sale) => {
+      if (sale) {
+        const {
+          id,
+          Cus_id,
+          Em_id,
+          Sale_date,
+          Totalkip,
+          Totalbath,
+          Totaldollar,
+          createdAt,
+          updatedAt,
+          customer,
+          employee,
+        } = sale;
+
+        const customerData = customer ? customer.dataValues : null; // Get the customer data values
+        const employeeData = employee ? employee.dataValues : null; // Get the employee data values
+
+        const result = {
+          id,
+          Cus_id,
+          Em_id,
+          Sale_date,
+          Totalkip,
+          Totalbath,
+          Totaldollar,
+          createdAt,
+          updatedAt,
+          customerFname: customerData ? customerData.Fname : null,
+          customerLname: customerData ? customerData.Lname : null,
+          customergender: customerData ? customerData.gender : null,
+          customervillage: customerData ? customerData.village : null,
+          customerprovince: customerData ? customerData.province : null,
+          customertel: customerData ? customerData.tel : null,
+          customeremail: customerData ? customerData.email : null,
+          employeefirst_name: employeeData ? employeeData.first_name : null,
+          employeelast_name: employeeData ? employeeData.last_name : null,
+          employeegender: employeeData ? employeeData.gender : null,
+          employeeaddress: employeeData ? employeeData.address : null,
+          employeetel: employeeData ? employeeData.tel : null,
+        };
+
+        res.status(200).json({ result });
+      } else {
+        res.status(404).json({ result: 'Sale not found' });
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 
 // create sale
 exports.create = async (req, res) => {
