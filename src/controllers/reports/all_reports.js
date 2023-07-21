@@ -1,8 +1,6 @@
 const customer = require("../../model/customer.model");
 const employee = require("../../model/employee.model");
-const Product = require('../../model/prduct.model')
 const SaleDetail = require('../../model/sale_detail.model');
-const importDetails = require('../../model/importDetails.model')
 const sequelize = require("../../configs/db");
 const { QueryTypes,Op } = require("sequelize");
 // get all
