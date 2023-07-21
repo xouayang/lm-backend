@@ -4,8 +4,7 @@ const sequelize = new Sequelize('LM Computer Shop management system', 'root', ''
     host: 'localhost',
     dialect: 'mysql',
     logging: false,
-    timezone: '+07:00',
-    port:8111
+    timezone: '+07:00'
    
 });
 
