@@ -18,7 +18,7 @@ exports.create_import = async (req, res) => {
     const item = req.body.item;
     for (let i = 0; i < item.length; i++) {
       await product.increment("quatity", {
-        by: item[i].quatity,
+        by: item[i].import_qty,
         where: {
           id: item[i].pro_id,
         },
