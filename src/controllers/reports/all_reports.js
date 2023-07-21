@@ -1,7 +1,8 @@
 const customer = require("../../model/customer.model");
 const employee = require("../../model/employee.model");
 const Product = require('../../model/prduct.model')
-const SaleDetail = require('../../model/sale_detail.model')
+const SaleDetail = require('../../model/sale_detail.model');
+const importDetails = require('../../model/importDetails.model')
 const sequelize = require("../../configs/db");
 const { QueryTypes,Op } = require("sequelize");
 // get all
@@ -103,11 +104,12 @@ exports.income = async (req, res) => {
 // outcome
 exports.outcome = async (req, res) => {
   try {
-    await SaleDetail.findAll().then((data) => {
-      return res.status(200).json(data)
-    }).catch((error) => {
-      return res.status(200).json({message:error.message})
-    })
+    const sql = `
+     select DISTINCT pd.id, pd.name as product_name,imd.import_qty,imd.import_details_date,imd.total_price from products pd 
+     inner join import_details imd on pd.id = imd.Pro_id
+    `
+    const data = await sequelize.query(sql,{type:QueryTypes.SELECT}) 
+    return res.status(200).json(data)
   } catch (error) {
     return res.status(500).json({message:error.message})
   }
