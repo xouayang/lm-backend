@@ -22,7 +22,7 @@ exports.create = async (req, res) => {
 exports.get_all = async (req ,res) => {
     try {
       const sql = `
-       select pt.id, pt.name,pt.quatity,pt.sale_price,pt.barcode,
+       select pt.id, pt.name,pt.quatity,pt.sale_price,pt.barcode, pt.profile,
        pt.barcode,pt.price,pt.createdAt,pdt.name as product_type_name,
        un.name as unit_name,sp.name as supplier_name,sp.address,sp.tel from products pt 
        inner join product_types pdt on pt.product_type_id = pdt.id
@@ -104,3 +104,33 @@ exports.subtractQuantity = async (req, res) => {
   }
 };
 
+// Get products almost out of stock (quantity between 0 to 10) along with count
+exports.get_almost_out_of_stock_products = async (req, res) => {
+  try {
+    const sqlProducts = `
+      SELECT pt.id, pt.name, pt.quatity, pt.sale_price, pt.barcode, pt.profile,
+      pt.barcode, pt.price, pt.createdAt, pdt.name AS product_type_name,
+      un.name AS unit_name, sp.name AS supplier_name, sp.address, sp.tel
+      FROM products pt 
+      INNER JOIN product_types pdt ON pt.product_type_id = pdt.id
+      INNER JOIN units un ON pt.unit_id = un.id 
+      INNER JOIN suppliers sp ON pt.supplier_id = sp.id
+      WHERE pt.quatity BETWEEN 0 AND 10
+      ORDER BY pt.quatity ASC
+    `;
+    const dataProducts = await sequelize.query(sqlProducts, { type: QueryTypes.SELECT });
+
+    const sqlCount = `
+      SELECT COUNT(*) AS count
+      FROM products
+      WHERE quatity BETWEEN 0 AND 10
+    `;
+    const dataCount = await sequelize.query(sqlCount, { type: QueryTypes.SELECT });
+
+    const count = dataCount[0].count;
+
+    return res.status(200).json({ count, products: dataProducts });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
