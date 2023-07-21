@@ -5,4 +5,6 @@ routes.get('/employee', controller.get_employee);
 routes.get('/product', controller.get_all_product);
 routes.get('/product-finished', controller.product_finished);
 routes.get('/top-sale', controller.top_sale_product);
+routes.get('/income', controller.income);
+routes.get('/outcome', controller.outcome);
 module.exports = routes;

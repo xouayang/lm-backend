@@ -88,3 +88,27 @@ exports.top_sale_product = async (req, res) => {
     return res.status(500).json({message:error.message})
   }
 }
+// income 
+exports.income = async (req, res) => {
+  try {
+    await SaleDetail.findAll().then((data) => {
+      return res.status(200).json(data)
+    }).catch((error) => {
+      return res.status(200).json({message:error.message})
+    })
+  } catch (error) {
+    return res.status(500).json({message:error.message})
+  }
+}
+// outcome
+exports.outcome = async (req, res) => {
+  try {
+    await SaleDetail.findAll().then((data) => {
+      return res.status(200).json(data)
+    }).catch((error) => {
+      return res.status(200).json({message:error.message})
+    })
+  } catch (error) {
+    return res.status(500).json({message:error.message})
+  }
+}
