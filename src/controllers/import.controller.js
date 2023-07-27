@@ -4,6 +4,7 @@ const product = require('../model/prduct.model');
 const sequelize = require('../configs/db');
 const order = require('../model/order.model')
 const {QueryTypes} = require('sequelize');
+
 exports.create_import = async (req, res) => {
   try {
     let result=[]
@@ -52,6 +53,7 @@ exports.create_import = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+
 // get history of imports
 exports.get_history = async (req, res) => {
     try {
@@ -72,3 +74,42 @@ exports.get_history = async (req, res) => {
      return res.status(500).json({message:error.message})   
     }
 }
+
+// ___________________REPORT BY START DATE AND END DATE
+// Get imports data by start date and end date
+exports.get_imports_by_date_range = async (req, res) => {
+  try {
+    let { startDate, endDate } = req.query;
+
+    // Check if startDate and endDate are not provided, set them to today's date (in UTC)
+    if (!startDate || !endDate) {
+      const today = new Date();
+      startDate = today.toISOString().slice(0, 10);
+      endDate = today.toISOString().slice(0, 10);
+    }
+
+    const sql = `
+      SELECT DISTINCT ip.id, ip.import_quaty AS total_quaty,
+      ip.import_total_kip,
+      ip.import_date, ipd.import_qty AS details_qty, ipd.total_price,
+      e.first_name AS employee_first_name, e.last_name AS employee_last_name
+      FROM imports ip 
+      INNER JOIN import_details ipd ON ip.id = ipd.import_id
+      INNER JOIN employees e ON ip.employee_id = e.id
+      WHERE DATE(ip.import_date) BETWEEN :startDate AND :endDate
+    `;
+
+    const data = await sequelize.query(sql, {
+      type: QueryTypes.SELECT,
+      replacements: { startDate, endDate },
+    });
+
+    if (data.length > 0) {
+      return res.status(200).json(data);
+    } else {
+      return res.status(200).json("No data found for the specified date range.");
+    }
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};

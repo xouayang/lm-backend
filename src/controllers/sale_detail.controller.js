@@ -3,6 +3,7 @@ const SaleDetail = require('../model/sale_detail.model');
 const Product = require('../model/prduct.model');
 const sequelize = require('../configs/db');
 const ProductType = require('../model/productType.model'); // Import the ProductType model
+
 // _________________________select top sell product of month___________________
 exports.getSaleDetailSummaryByMonthOfYear = async (req, res) => {
   try {
@@ -73,7 +74,6 @@ exports.getSaleDetailSummaryByMonthOfYear = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
 // ______________________select top sell pruduct of year____________________
 exports.getSaleDetailSummaryByYear = async (req, res) => {
   try {
@@ -173,6 +173,7 @@ exports.getAll = async (req, res) => {
 
 // Get sale detail by id
 exports.getById = async (req, res) => {
+  console.log('here is get by id')
   try {
     const { id } = req.params;
     await SaleDetail.findOne({ where: { id: id } }).then((data) => {

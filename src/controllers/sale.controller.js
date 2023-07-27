@@ -1,7 +1,57 @@
 const Sale = require("../model/sale.model");
+const { Op } = require("sequelize");
 const Customer = require("../model/customer.model"); // Import the Customer model
 const Employee = require("../model/employee.model"); // Import the Employee model
 
+exports.getSalesByDateRange = async (req, res) => {
+  try {
+    const { startDate, endDate } = req.query;
+
+    let whereCondition = {};
+    if (startDate && endDate) {
+      // Convert dates to include time component (start time: 00:00:00, end time: 23:59:59)
+      const startDateTime = new Date(startDate).setHours(0, 0, 0, 0);
+      const endDateTime = new Date(endDate).setHours(23, 59, 59, 999);
+
+      whereCondition = {
+        Sale_date: {
+          [Op.between]: [new Date(startDateTime), new Date(endDateTime)],
+        },
+      };
+    }
+
+    const data = await Sale.findAndCountAll({
+      where: whereCondition,
+      include: [
+        {
+          model: Customer,
+          as: "customer",
+          attributes: ["Fname", "Lname"],
+        },
+        {
+          model: Employee,
+          as: "employee",
+          attributes: ["first_name", "last_name"],
+        },
+      ],
+    });
+    // Process the data to modify the response format
+    const modifiedData = data.rows.map((sale) => ({
+      ...sale.toJSON(),
+      customerFname: sale.customer.Fname,
+      customerLname: sale.customer.Lname,
+      employeeFirst_name: sale.employee.first_name,
+      employeeLast_name: sale.employee.last_name,
+      // Remove the nested objects customer and employee
+      customer: undefined,
+      employee: undefined,
+    }));
+
+    return res.status(200).json({ count: data.count, rows: modifiedData });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
 // get sale by id with additional details
 exports.getSaleById = async (req, res) => {
   try {
@@ -93,7 +143,7 @@ exports.getAll = async (req, res) => {
       if (data.rows.length > 0) {
         return res.status(200).json(data);
       }
-      return res.status(404).json({ message: "NOT FOUND DATA" });
+      return res.status(404).json({ message: "NOT FOUND DATA for all" });
     });
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -108,7 +158,7 @@ exports.getById = async (req, res) => {
       if (data) {
         return res.status(200).json(data);
       }
-      return res.status(404).json({ message: "NOT FOUND DATA" });
+      return res.status(404).json({ message: "NOT FOUND DATA by id" });
     });
   } catch (error) {
     return res.status(500).json({ message: error.message });

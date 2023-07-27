@@ -2,6 +2,7 @@ const controller = require('../controllers/sale.controller');
 const routes = require('express').Router();
 
 routes.post('/', controller.create);
+routes.get("/date/range", controller.getSalesByDateRange);
 routes.put('/:id', controller.updateSale);
 routes.get('/', controller.getAll);
 routes.get('/:id', controller.getById);
