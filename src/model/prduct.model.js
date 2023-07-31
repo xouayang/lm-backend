@@ -11,6 +11,10 @@ const Product = sequelize.define(
       allowNull: false,
       primaryKey: true,
     },
+    profile: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     name: {
       type: DataTypes.STRING,
       allowNull: false,

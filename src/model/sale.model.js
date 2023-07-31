@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../configs/db");
-const Customer = require("./customer.model"); // Import the Customer model
-const Employee = require("./employee.model"); // Import the Employee model
+const Customer = require("./customer.model"); 
+const Employee = require("./employee.model"); 
 
 const Sale = sequelize.define(
   "sales",

@@ -1,5 +1,6 @@
 const customer = require("../../model/customer.model");
 const employee = require("../../model/employee.model");
+const Product = require("../../model/prduct.model");
 const SaleDetail = require("../../model/sale_detail.model");
 const sequelize = require("../../configs/db");
 const { QueryTypes, Op } = require("sequelize");
@@ -97,8 +98,8 @@ exports.income = async (req, res) => {
     select DISTINCT  pd.name as product_name,sd.Sale_qty  from products pd 
     inner join sale_details sd 
    `;
-   const data = await sequelize.query(sql, { type: QueryTypes.SELECT });
-   return res.status(200).json(data);
+    const data = await sequelize.query(sql, { type: QueryTypes.SELECT });
+    return res.status(200).json(data);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

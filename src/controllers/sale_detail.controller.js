@@ -3,6 +3,7 @@ const SaleDetail = require('../model/sale_detail.model');
 const Product = require('../model/prduct.model');
 const sequelize = require('../configs/db');
 const ProductType = require('../model/productType.model'); // Import the ProductType model
+
 // _________________________select top sell product of month___________________
 exports.getSaleDetailSummaryByMonthOfYear = async (req, res) => {
   try {
@@ -73,7 +74,6 @@ exports.getSaleDetailSummaryByMonthOfYear = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
 // ______________________select top sell pruduct of year____________________
 exports.getSaleDetailSummaryByYear = async (req, res) => {
   try {
@@ -173,6 +173,7 @@ exports.getAll = async (req, res) => {
 
 // Get sale detail by id
 exports.getById = async (req, res) => {
+  console.log('here is get by id')
   try {
     const { id } = req.params;
     await SaleDetail.findOne({ where: { id: id } }).then((data) => {
@@ -288,5 +289,66 @@ exports.getSaleDetailsBySaleId = async (req, res) => {
     });
   } catch (error) {
     return res.status(500).json({ message: error.message });
+  }
+};
+exports.getSaleDetailSummaryAllTime = async (req, res) => {
+  try {
+    const { limit } = req.query;
+
+    const summary = await SaleDetail.findAll({
+      attributes: [
+        'Pro_id',
+        [
+          sequelize.fn('SUM', sequelize.col('Sale_qty')),
+          'totalQuantity'
+        ],
+        [
+          sequelize.fn('SUM', sequelize.col('Totalkip')),
+          'totalSalePrice'
+        ],
+      ],
+      group: ['Pro_id'],
+      order: [
+        [sequelize.literal('totalQuantity'), 'DESC']
+      ],
+      limit: parseInt(limit, 10),
+      include: [
+        {
+          model: Product,
+          attributes: ['id', 'name'],
+          as: 'product',
+        },
+      ],
+    });
+
+    if (summary.length === 0) {
+      return res.status(404).json({ message: 'No sale details found for all time' });
+    }
+
+    const result = summary.map((row) => {
+      const { Pro_id, totalQuantity, totalSalePrice, product } = row.toJSON();
+
+      const productName = product ? product.name : 'Product Not Found';
+
+      return {
+        product_id: Pro_id,
+        totalQuantity: Number(totalQuantity),
+        totalSalePrice: Number(totalSalePrice),
+        productName,
+      };
+    });
+
+    const overallSum = result.reduce(
+      (accumulator, { totalQuantity, totalSalePrice }) => {
+        accumulator.totalQuantity += totalQuantity;
+        accumulator.totalSalePrice += totalSalePrice;
+        return accumulator;
+      },
+      { totalQuantity: 0, totalSalePrice: 0 }
+    );
+
+    res.status(200).json({ overallSum, result });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 };
