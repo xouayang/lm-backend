@@ -35,13 +35,14 @@ exports.getSalesByDateRange = async (req, res) => {
         },
       ],
     });
+
     // Process the data to modify the response format
     const modifiedData = data.rows.map((sale) => ({
       ...sale.toJSON(),
-      customerFname: sale.customer.Fname,
-      customerLname: sale.customer.Lname,
-      employeeFirst_name: sale.employee.first_name,
-      employeeLast_name: sale.employee.last_name,
+      customerFname: sale.customer ? sale.customer.Fname : null,
+      customerLname: sale.customer ? sale.customer.Lname : null,
+      employeeFirst_name: sale.employee ? sale.employee.first_name : null,
+      employeeLast_name: sale.employee ? sale.employee.last_name : null,
       // Remove the nested objects customer and employee
       customer: undefined,
       employee: undefined,
