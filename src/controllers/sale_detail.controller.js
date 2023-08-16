@@ -4,6 +4,75 @@ const Product = require('../model/prduct.model');
 const sequelize = require('../configs/db');
 const ProductType = require('../model/productType.model'); // Import the ProductType model
 
+// Add a new controller function to select sale details by 'Guaranteed' field
+exports.getSaleDetailsByGuaranteed = async (req, res) => {
+  try {
+    const { guaranteed } = req.query;
+
+    // Validate that the 'guaranteed' parameter is provided and is a valid boolean value
+    if (guaranteed !== 'true' && guaranteed !== 'false') {
+      return res.status(400).json({ error: "'guaranteed' parameter must be 'true' or 'false'" });
+    }
+
+    const saleDetails = await SaleDetail.findAll({
+      attributes: [
+        'id',
+        'Sale_id',
+        'Pro_id',
+        'Exch_id',
+        'Sale_detail_date',
+        'Sale_qty',
+        'Guanranteed',
+        'Date_expired',
+        'Totalkip',
+      ],
+      include: [
+        {
+          model: Product,
+          attributes: ['id', 'name'],
+          as: 'product',
+        },
+      ],
+      where: {
+        Guanranteed: guaranteed === 'true', // Convert query string to boolean
+      },
+    });
+
+    const mappedSaleDetails = saleDetails.map(saleDetail => {
+      const {
+        id,
+        Sale_id,
+        Pro_id,
+        Exch_id,
+        Sale_detail_date,
+        Sale_qty,
+        Guanranteed,
+        Date_expired,
+        Totalkip,
+        product,
+      } = saleDetail.toJSON();
+
+      return {
+        id,
+        Sale_id,
+        Pro_id,
+        Exch_id,
+        Sale_detail_date,
+        Sale_qty,
+        Guanranteed,
+        Date_expired,
+        Totalkip,
+        productId: Pro_id,
+        productIdName: product ? product.name : 'Product Not Found',
+      };
+    });
+
+    res.status(200).json(mappedSaleDetails);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 // _________________________select top sell product of month___________________
 exports.getSaleDetailSummaryByMonthOfYear = async (req, res) => {
   try {
